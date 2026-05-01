@@ -1,1 +1,26 @@
+# Vagrant files
+.vagrant/
+*.box
+
+# Docker / Service Data Persistence
+# (We don't want to upload databases or log archives to Git!)
 data/
+data/postgres/
+data/prometheus/
+data/loki/
+data/grafana/
+
+# Temporary and Log files
+*.log
+*.tmp
+logs/
+
+# Secrets and Environment Variables
+# (Uncomment .env if you start storing real passwords there)
+# .env
+
+# IDE and OS generated files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
