@@ -1,27 +1,53 @@
 #!/bin/bash
 
-echo "🚀 Running load tests for the lab..."
+# ==========================================================
+# LAB OBSERVABILITY - STRESS TEST & SECURITY LOG GENERATOR
+# ==========================================================
 
-# 1. LOG GENERATION (Failed logins)
-echo "--- 1/3: Generating log errors (Loki) ---"
-for i in {1..5}; do
-  # Simulating failed login attempts to trigger 'FATAL' logs in Postgres
-  docker exec lab-postgres PGPASSWORD=wrong_password psql -U user -d lab_db -c "SELECT 1;" > /dev/null 2>&1
-  sleep 1
+echo "🚀 Starting advanced stress test..."
+
+# 1. GENERATING VARIOUS FATAL ERRORS (For Loki)
+echo "--- 1/3: Generating multiple types of FATAL errors ---"
+
+# Type A: Non-existent users (Role errors)
+for i in {1..3}; do
+  echo "Simulating unauthorized user: intruder_$i"
+  docker exec lab-postgres psql -U intruder_$i -d lab_db > /dev/null 2>&1
+  sleep 0.5
 done
-echo "✅ Generated 5 failed login attempts (look for 'FATAL' in logs)."
 
-# 2. DB LOAD GENERATION (pgbench)
-echo "--- 2/3: Generating transactions (Postgres Exporter) ---"
-# Initializing pgbench schema and then running a high-concurrency stress test
-docker exec lab-postgres pgbench -i -s 1 lab_db -U user > /dev/null 2>&1
-docker exec lab-postgres pgbench -c 10 -j 2 -t 1000 lab_db -U user
-echo "✅ Database performance test finished (check for TPS spikes)."
+# Type B: Non-existent database
+echo "Simulating access to wrong database: secret_vault"
+docker exec lab-postgres psql -U user -d secret_vault > /dev/null 2>&1
+sleep 0.5
 
-# 3. GENERATING SLOW QUERIES
-echo "--- 3/3: Generating slow queries ---"
-# Executing an intentional sleep and a heavy cross-join to simulate a slow query
-docker exec lab-postgres psql -U user -d lab_db -c "SELECT pg_sleep(5); SELECT count(*) FROM pg_catalog.pg_class a, pg_catalog.pg_class b, pg_catalog.pg_class c;" > /dev/null 2>&1
-echo "✅ Slow queries sent (check the DB Dashboard for latency)."
+# Type C: Authentication failures (Wrong password via network)
+# We use -h localhost to force password check via TCP
+echo "Simulating password brute-force attempt..."
+for i in {1..3}; do
+  docker exec -e PGPASSWORD="wrong_password_$i" lab-postgres psql -h localhost -U user -d lab_db -c "SELECT 1;" > /dev/null 2>&1
+  sleep 0.5
+done
 
-echo "🏁 Test finished. Check Grafana!"
+echo "✅ FATAL logs generated. Check your 'Security' panel."
+
+# 2. HEAVY DATABASE LOAD (For Prometheus & cAdvisor)
+echo "--- 2/3: Generating heavy system load (pgbench) ---"
+
+# Re-initializing with larger scale to make it work longer
+docker exec lab-postgres pgbench -i -s 10 lab_db -U user > /dev/null 2>&1
+
+# Running intensive test: 10 clients, 4 threads, 2000 transactions each
+# This will cause a visible spike in CPU and Memory Usage
+docker exec lab-postgres pgbench -c 10 -j 4 -t 2000 lab_db -U user
+
+echo "✅ System load generated. Look for CPU/Network spikes in Grafana."
+
+# 3. LATENCY & SLOW QUERIES (For pg_stat_statements)
+echo "--- 3/3: Generating slow queries and noise ---"
+for i in {1..5}; do
+  # Sleep 1.5 seconds per query to show high latency
+  docker exec lab-postgres psql -U user -d lab_db -c "SELECT pg_sleep(1.5); SELECT count(*) FROM pg_class a, pg_class b;" > /dev/null 2>&1
+done
+
+echo "🏁 All tests completed! System should be 'glowing' in Grafana."
