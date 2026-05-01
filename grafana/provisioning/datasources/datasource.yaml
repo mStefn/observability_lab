@@ -3,8 +3,7 @@ apiVersion: 1
 datasources:
   - name: Prometheus
     type: prometheus
-    access: proxy
-    # Wewnątrz sieci Dockera nazwa serwera to nazwa kontenera
+    access: proxy   
     url: http://lab-prometheus:9090
     isDefault: true
     editable: true
