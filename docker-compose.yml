@@ -1,7 +1,7 @@
 services:
-  # ==========================================
-  # 1. THE TARGET: Baza danych do monitorowania
-  # ==========================================
+  # =============
+  # 1. THE TARGET
+  # =============
   postgres:
     image: postgres:15
     container_name: lab-postgres
@@ -18,9 +18,9 @@ services:
     networks:
       - monitoring_net
 
-  # ==========================================
-  # 2. COLLECTORS & EXPORTERS: Zbieracze danych
-  # ==========================================
+  # =========================
+  # 2. COLLECTORS & EXPORTERS
+  # =========================
   postgres-exporter:
     image: prometheuscommunity/postgres-exporter
     container_name: lab-postgres-exporter
@@ -75,9 +75,9 @@ services:
     networks:
       - monitoring_net
 
-  # ==========================================
-  # 3. STORAGE & VISUALIZATION: Bazy metryk i Grafana
-  # ==========================================
+  # ==========================
+  # 3. STORAGE & VISUALIZATION
+  # ==========================
   prometheus:
     image: prom/prometheus:latest
     container_name: lab-prometheus
