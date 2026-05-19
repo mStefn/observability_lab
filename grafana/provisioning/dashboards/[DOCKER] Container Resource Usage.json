@@ -732,7 +732,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "P8E80F9AEF21F6940"
+        "uid": "Loki"
       },
       "fieldConfig": {
         "defaults": {},
@@ -764,7 +764,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "uid": "Loki"
           },
           "direction": "backward",
           "editorMode": "code",
@@ -850,6 +850,6 @@
   "timezone": "browser",
   "title": "[DOCKER] Container Resource Usage",
   "uid": "pMEd7m0Mz",
-  "version": 3,
+  "version": 2,
   "weekStart": ""
 }
