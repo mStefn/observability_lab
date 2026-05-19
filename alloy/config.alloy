@@ -1,9 +1,9 @@
-// Odkrywanie kontenerów Docker
+// 1. Odkrywanie kontenerów Docker
 discovery.docker "containers" {
   host = "unix:///var/run/docker.sock"
 }
 
-// Przekształcanie etykiet (żeby w Grafanie widzieć nazwy kontenerów)
+// 2. Przekształcanie etykiet (żeby w Grafanie widzieć ładne nazwy kontenerów)
 discovery.relabel "docker_logs" {
   targets = discovery.docker.containers.targets
 
@@ -14,16 +14,17 @@ discovery.relabel "docker_logs" {
   }
 }
 
-// Pobieranie logów
+// 3. Pobieranie logów z socketu Dockera
 loki.source.docker "logs" {
   host       = "unix:///var/run/docker.sock"
   targets    = discovery.relabel.docker_logs.output
   forward_to = [loki.write.local.receiver]
 }
 
-// Wysyłka do Loki
+// 4. Wysyłka logów do bazy Loki
 loki.write "local" {
   endpoint {
-    url = "http://loki:3100/loki/api/v1/push"
+    // ZMIENIONE: Używamy konsekwentnie nazwy kontenera 'lab-loki'
+    url = "http://lab-loki:3100/loki/api/v1/push"
   }
 }

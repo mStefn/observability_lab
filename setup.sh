@@ -19,7 +19,5 @@ sudo chown -R 10001:10001 ./data/loki
 sudo chmod -R 775 ./data/grafana ./data/prometheus ./data/loki
 
 echo "Gotowe!"
-echo "Ważne: upewnij się, że masz też nadane uprawnienia do socketu:"
-echo "sudo chmod 666 /var/run/docker.sock"
-echo ""
-echo "Uruchom projekt: docker compose up -d"
+echo "Infrastruktura przygotowana. Uruchom projekt wpisując:"
+echo "docker compose up -d"

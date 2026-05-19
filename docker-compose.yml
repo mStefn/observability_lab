@@ -72,17 +72,20 @@ services:
       - monitoring_net
 
   cadvisor:
-    # CHANGED: Using specific tag to avoid pulling issues on some architectures
     image: gcr.io/cadvisor/cadvisor:v0.49.1
     container_name: lab-cadvisor
+    user: root             # Rozwiązuje problem uprawnień do docker.sock na każdym systemie
     privileged: true
+    pid: host              # Wymagane przez Cgroup v2
+    cgroupns: host         # Wymagane przez Cgroup v2 (Ubuntu/Debian)
     ports:
       - "8080:8080"
     volumes:
       - /:/rootfs:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro   # <-- TUTAJ JEST FIX
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro  # Poprawia zczytywanie metryk I/O
     networks:
       - monitoring_net
 
