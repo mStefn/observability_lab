@@ -77,7 +77,6 @@ services:
     user: root             # Rozwiązuje problem uprawnień do docker.sock
     privileged: true
     pid: host              # Wymagane przez Cgroup v2
-    cgroupns_mode: host    # Wymagane przez Cgroup v2 w formacie Docker Compose
     ports:
       - "8080:8080"
     volumes:
