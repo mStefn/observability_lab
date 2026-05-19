@@ -74,10 +74,10 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.49.1
     container_name: lab-cadvisor
-    user: root             # Rozwiązuje problem uprawnień do docker.sock na każdym systemie
+    user: root             # Rozwiązuje problem uprawnień do docker.sock
     privileged: true
     pid: host              # Wymagane przez Cgroup v2
-    cgroupns: host         # Wymagane przez Cgroup v2 (Ubuntu/Debian)
+    cgroupns_mode: host    # Wymagane przez Cgroup v2 w formacie Docker Compose
     ports:
       - "8080:8080"
     volumes:
