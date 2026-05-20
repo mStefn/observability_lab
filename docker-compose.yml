@@ -13,7 +13,6 @@ services:
       - POSTGRES_DB=lab_db
     ports:
       - "5432:5432"
-    # Enhanced logging configuration to provide detailed data for Loki
     command: >
       postgres
       -c shared_preload_libraries=pg_stat_statements
@@ -24,7 +23,6 @@ services:
       -c log_statement=all
       -c log_min_duration_statement=0
     volumes:
-      # CHANGED: Using Docker Named Volume instead of Vagrant synced folder
       - pgdata:/var/lib/postgresql/data
     networks:
       - monitoring_net
@@ -97,7 +95,7 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./data/prometheus:/prometheus
+      - prometheus_data:/prometheus
     networks:
       - monitoring_net
 
@@ -107,7 +105,7 @@ services:
     ports:
       - "3100:3100"
     volumes:
-      - ./data/loki:/loki
+      - loki_data:/loki
     command: -config.file=/etc/loki/local-config.yaml
     networks:
       - monitoring_net
@@ -120,7 +118,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - ./data/grafana:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
     depends_on:
       - prometheus
@@ -134,3 +132,6 @@ networks:
 
 volumes:
   pgdata:
+  prometheus_data:
+  loki_data:
+  grafana_data:
