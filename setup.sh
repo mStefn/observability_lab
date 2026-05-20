@@ -1,23 +1,21 @@
 #!/bin/bash
 
-echo "Przygotowywanie srodowiska Observability Lab..."
+# Zatrzymanie skryptu w przypadku jakiegokolwiek błędu
+set -e
 
-# Tworzenie struktury katalogow przy uzyciu sudo
-echo "Tworzenie struktury katalogow (Grafana, Prometheus, Loki)..."
-sudo mkdir -p ./data/grafana ./data/prometheus ./data/loki
+echo "🚀 Przygotowywanie środowiska Observability Lab (Wersja Multiplatformowa)..."
 
-# Ustawianie uprawnien
-echo "Ustawianie uprawnien zapisu dla kontenerow..."
-# Grafana ID: 472
-sudo chown -R 472:472 ./data/grafana
-# Prometheus ID: 65534 (nobody)
-sudo chown -R 65534:65534 ./data/prometheus
-# Loki ID: 10001
-sudo chown -R 10001:10001 ./data/loki
+# Sprawdzenie czy Docker jest uruchomiony
+if ! docker info > /dev/null 2>&1; then
+    echo "❌ Błąd: Docker nie jest uruchomiony! Uruchom Docker Desktop (Windows) lub usługę docker (Linux)."
+    exit 1
+fi
 
-# Opcjonalne: upewnienie sie, ze foldery maja odpowiednie tryby zapisu
-sudo chmod -R 775 ./data/grafana ./data/prometheus ./data/loki
+echo "🧹 Czyszczenie starych kontenerów (jeśli istnieją)..."
+docker compose down --volumes --remove-orphans > /dev/null 2>&1 || true
 
-echo "Gotowe!"
-echo "Infrastruktura przygotowana. Uruchom projekt wpisując:"
+echo "✅ Środowisko jest gotowe do uruchomienia!"
+echo "------------------------------------------------"
+echo "Uruchom teraz laboratorium wpisując w terminalu:"
 echo "docker compose up -d"
+echo "------------------------------------------------"
