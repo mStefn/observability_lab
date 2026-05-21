@@ -66,10 +66,13 @@ How to run the test?
 From the root directory of the project, simply run:
 
 chmod +x demo_load.sh
+
 ./demo_load.sh
+
 Follow the on-screen instructions and watch live as Grafana reacts to the anomalies!
 
 Environment Cleanup
+
 To completely remove the lab (including all saved database data and volumes):
 
 docker compose down --volumes --remove-orphans
