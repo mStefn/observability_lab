@@ -36,6 +36,7 @@ Below is the complete list of network ports used across the stack, including bot
 
 1. Clone the repository and navigate to the project directory:
    git clone https://github.com/mStefn/observability_lab.git
+   
    cd observability_lab
    
 Run the setup script (this will automatically clean up old containers and start the new ones):
