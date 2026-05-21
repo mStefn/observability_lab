@@ -45,9 +45,11 @@ chmod +x setup.sh
 (Alternatively, you can simply run: docker compose up -d)
 
 Open your browser and access Grafana:
+
 URL: http://localhost:3000
 
 Login: admin
+
 Password: admin
 
 Live Demo & Stress Test
