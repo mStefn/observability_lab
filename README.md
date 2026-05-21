@@ -40,8 +40,11 @@ Below is the complete list of network ports used across the stack, including bot
    cd observability_lab
    
 Run the setup script (this will automatically clean up old containers and start the new ones):
+
 chmod +x setup.sh
+
 ./setup.sh
+
 (Alternatively, you can simply run: docker compose up -d)
 
 Open your browser and access Grafana:
